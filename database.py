@@ -18,7 +18,7 @@ db = mysql.connect(
 cursor = db.cursor()
 
 ## creating tables at start
-cursor.execute("CREATE TABLE IF NOT EXISTS words (id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, word VARCHAR(255), user_id INT(11), date_added DATE, last_repeat DATE, next_repeat DATE, level INT(11))")
+cursor.execute("CREATE TABLE IF NOT EXISTS words (id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, word VARCHAR(255), user_id INT(11), date_added DATE, last_repeat DATE, next_repeat DATE, level INT(11), is_active BOOLEAN DEFAULT false)")
 cursor.execute("CREATE TABLE IF NOT EXISTS users (id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), tg_user_id BIGINT)")
 
 def create_user(username, tg_user_id):
