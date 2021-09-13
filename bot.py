@@ -24,6 +24,10 @@ def get_text_messages(message):
     send_today_pull(tg_user_id)
   elif (word == 'y'):
     send_random_word(tg_user_id)
+  elif (word == 'k'):
+    know_word()
+  elif (word == 'd'):
+    dont_know_word()
   else:
     database.save_word(word, user_id)
     save_report(word, tg_user_id)
@@ -43,11 +47,22 @@ def send_today_pull(tg_usr_id):
   for x in words_to_send:
     bot.send_message(tg_usr_id, x)
     
+## Y
 def send_random_word(tg_usr_id):
-  word_to_send = database.get_today_pull()
-  rndm = random.choice (word_to_send)
-  print(rndm)
-  bot.send_message(tg_usr_id, rndm)
+  id = database.get_random_word_id()
+  word = database.get_word(id)
+  
+  
+  bot.send_message(tg_usr_id, word)
+  database.activate_word(id)
+
+def know_word():
+  database.level_up()
+  database.deactivate_word()
+
+def dont_know_word():
+  database.level_down()
+  database.deactivate_word()
 
 ## makes the bot works constantly. though i'm not really sure
 bot.polling(none_stop=True, interval=0)

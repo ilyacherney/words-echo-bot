@@ -1,5 +1,6 @@
 ﻿cd C:\Program Files\MySQL\MySQL Server 8.0\bin
 mysql -h 127.0.0.1 -u root -p
+use words_echo_bot;
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PYTHON
