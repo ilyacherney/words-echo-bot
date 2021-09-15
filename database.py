@@ -109,9 +109,19 @@ def get_today_pull_id():
   print(today_pull)
   return today_pull
 
+def has_active_word():
+  query = "SELECT COUNT(id) is_active FROM words WHERE is_active = 1;"
+  cursor.execute(query)
+  count = cursor.fetchone()[0]
+
+  if (count > 0):
+    return True
+  else:
+    return False
+  
 
 # get_random_word()
-
+print(has_active_word())
 # get_word(get_random_word_id())
 # activate_word(2)
 # deactivate_word(1)

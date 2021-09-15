@@ -23,11 +23,16 @@ def get_text_messages(message):
   if (word == 't'):
     send_today_pull(tg_user_id)
   elif (word == 'y'):
-    send_random_word(tg_user_id)
+    if (database.has_active_word() == True):
+      bot.send_message(tg_user_id, 'already have an active word')
+    elif (database.has_active_word() == False):
+      send_random_word(tg_user_id)
   elif (word == 'k'):
     know_word()
+    bot.send_message(tg_user_id, 'glad to hear you know the word!')
   elif (word == 'd'):
     dont_know_word()
+    bot.send_message(tg_user_id, 'we will repeat that one later')
   else:
     database.save_word(word, user_id)
     save_report(word, tg_user_id)
