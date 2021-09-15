@@ -43,8 +43,8 @@ def get_user_id(tg_user_id):
  
   return id
 
-def get_random_word_id():
-  random_id = random.choice(get_today_pull_id())[0]
+def get_random_word_id(usr_id):
+  random_id = random.choice(get_today_pull_id(usr_id))[0]
   print(random_id)
   return random_id
 
@@ -55,14 +55,14 @@ def get_word(id):
   print(word)
   return word
 
-def level_up():
-  query = "UPDATE words SET level = level + 1 WHERE is_active = true"
+def level_up(usr_id):
+  query = "UPDATE words SET level = level + 1 WHERE is_active = true AND user_id = {}".format(usr_id)
   cursor.execute(query)
   db.commit()
   print(query)
 
-def level_down():
-  query = "UPDATE words SET level = level - 1 WHERE is_active = true"
+def level_down(usr_id):
+  query = "UPDATE words SET level = level - 1 WHERE is_active = true AND user_id = {}".format(usr_id)
   cursor.execute(query)
   db.commit()
   print(query)
@@ -99,10 +99,10 @@ def get_today_pull():
   print(today_pull)
   return today_pull
 
-def get_today_pull_id():
-  query = "SELECT id FROM words WHERE next_repeat = '{}'".format(today)
+def get_today_pull_id(usr_id):
+  query = "SELECT id FROM words WHERE next_repeat = '%s' AND user_id = %d" % (today, usr_id)
+  print(query)
   cursor.execute(query)
-  # print(query)
   # print(cursor.fetchall())
   
   today_pull = cursor.fetchall()

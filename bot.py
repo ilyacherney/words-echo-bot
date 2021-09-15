@@ -26,12 +26,12 @@ def get_text_messages(message):
     if (database.has_active_word() == True):
       bot.send_message(tg_user_id, 'already have an active word')
     elif (database.has_active_word() == False):
-      send_random_word(tg_user_id)
+      send_random_word(user_id, tg_user_id)
   elif (word == 'k'):
-    know_word()
+    know_word(user_id)
     bot.send_message(tg_user_id, 'glad to hear you know the word!')
   elif (word == 'd'):
-    dont_know_word()
+    dont_know_word(user_id)
     bot.send_message(tg_user_id, 'we will repeat that one later')
   else:
     database.save_word(word, user_id)
@@ -53,20 +53,20 @@ def send_today_pull(tg_usr_id):
     bot.send_message(tg_usr_id, x)
     
 ## Y
-def send_random_word(tg_usr_id):
-  id = database.get_random_word_id()
+def send_random_word(usr_id, tg_usr_id):
+  id = database.get_random_word_id(usr_id)
   word = database.get_word(id)
   
   
   bot.send_message(tg_usr_id, word)
   database.activate_word(id)
 
-def know_word():
-  database.level_up()
+def know_word(usr_id):
+  database.level_up(usr_id)
   database.deactivate_word()
 
-def dont_know_word():
-  database.level_down()
+def dont_know_word(usr_id):
+  database.level_down(usr_id)
   database.deactivate_word()
 
 ## makes the bot works constantly. though i'm not really sure
