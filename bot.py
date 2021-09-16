@@ -1,9 +1,10 @@
+import config
 import random
 from telebot.types import Message
 import database
 import telebot;
 
-bot = telebot.TeleBot('1996263018:AAG3t3kljK3R_9GEBBtkskYC3kLrf-wjV0I');
+bot = telebot.TeleBot(config.token)
 
 ## adding user to database at start
 @bot.message_handler(commands=['start'])
