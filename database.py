@@ -23,6 +23,7 @@ def create_tables():
     """
   cursor.execute(query_words_table)
   
+
   query_users_table = """
     CREATE TABLE IF NOT EXISTS users (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -31,6 +32,8 @@ def create_tables():
     )
     """
   cursor.execute(query_users_table)
+
+
 
 def create_user(username, tg_user_id):
   query = "INSERT IGNORE INTO users (username, tg_user_id) VALUES (%s, %s)"
@@ -81,8 +84,8 @@ def activate_word(id):
   cursor.execute(query)
   db.commit()
 
-def deactivate_word():
-  query = "UPDATE words SET is_active = false WHERE is_active = true"
+def deactivate_word(usr_id):
+  query = "UPDATE words SET is_active = false WHERE is_active = true AND user_id = %d" % (usr_id)
   cursor.execute(query)
   db.commit()
 
@@ -92,8 +95,8 @@ def get_today_pull_id(usr_id):
   today_pull = cursor.fetchall()
   return today_pull
 
-def has_active_word():
-  query = "SELECT COUNT(id) is_active FROM words WHERE is_active = 1;"
+def has_active_word(usr_id):
+  query = "SELECT COUNT(id) is_active FROM words WHERE is_active = 1 AND user_id = %d" % (usr_id)
   cursor.execute(query)
   count = cursor.fetchone()[0]
 

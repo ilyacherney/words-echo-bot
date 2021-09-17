@@ -6,6 +6,8 @@ import telebot;
 
 bot = telebot.TeleBot(config.token)
 
+database.create_tables()
+
 ## adding user to database at start
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -24,9 +26,9 @@ def get_text_messages(message):
   if (word == 't'):
     send_today_pull(tg_user_id)
   elif (word == 'y'):
-    if (database.has_active_word() == True):
+    if (database.has_active_word(user_id) == True):
       bot.send_message(tg_user_id, 'already have an active word')
-    elif (database.has_active_word() == False):
+    elif (database.has_active_word(user_id) == False):
       send_random_word(user_id, tg_user_id)
   elif (word == 'k'):
     know_word(user_id)
@@ -47,7 +49,6 @@ def save_report(word, tg_user_id):
 
 ## sending today pull
 def send_today_pull(tg_usr_id):
-
   print('test today pull')
   words_to_send = database.get_today_pull()
   for x in words_to_send:
@@ -57,14 +58,12 @@ def send_today_pull(tg_usr_id):
 def send_random_word(usr_id, tg_usr_id):
   id = database.get_random_word_id(usr_id)
   word = database.get_word(id)
-  
-  
   bot.send_message(tg_usr_id, word)
   database.activate_word(id)
 
 def know_word(usr_id):
   database.level_up(usr_id)
-  database.deactivate_word()
+  database.deactivate_word(usr_id)
 
 def dont_know_word(usr_id):
   database.level_down(usr_id)
