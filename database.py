@@ -69,6 +69,9 @@ def get_word(id):
   print(word)
   return word
 
+# get_word_id():
+
+
 def level_up(usr_id):
   query = "UPDATE words SET level = level + 1 WHERE is_active = true AND user_id = {}".format(usr_id)
   cursor.execute(query)
@@ -104,3 +107,9 @@ def has_active_word(usr_id):
     return True
   else:
     return False
+
+def edit_next_repeat(usr_id):
+  query = "UPDATE words SET next_repeat = date_add(curdate(), interval 1 day) WHERE is_active = 1 AND user_id = %d" % (usr_id)
+  print(query)
+  cursor.execute(query)
+  db.commit()
