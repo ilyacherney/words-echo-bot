@@ -29,11 +29,15 @@ def get_text_messages(message):
     if (database.has_active_word(user_id) == True):
       bot.send_message(tg_user_id, 'already have an active word')
     elif (database.has_active_word(user_id) == False):
-      send_random_word(user_id, tg_user_id)
+        send_random_word(user_id, tg_user_id)
   elif (word == 'k'):
     active_word_id = database.get_active_word_id(user_id)
     know_word(active_word_id)
     bot.send_message(tg_user_id, 'glad to hear you know the word!')
+    if database.has_unrepeated_words:
+      send_random_word(user_id, tg_user_id)
+    else:
+      bot.send_message(tg_user_id, 'all words repeated')
   elif (word == 'd'):
     dont_know_word(user_id)
     bot.send_message(tg_user_id, 'well... we will repeat that one later')
@@ -66,11 +70,13 @@ def know_word(wrd_id):
   database.level_up(wrd_id)
   database.edit_next_repeat(wrd_id)
   database.deactivate_word(wrd_id)
+  database.edit_last_repeat(wrd_id)
 
-def dont_know_word(usr_id):
-  database.level_down(usr_id)
-  database.edit_next_repeat(usr_id)
-  database.deactivate_word()
+def dont_know_word(wrd_id):
+  database.level_down(wrd_id)
+  database.edit_next_repeat(wrd_id)
+  database.deactivate_word(wrd_id)
+  database.edit_last_repeat(wrd_id)
 
 ## makes the bot works constantly. though i'm not really sure
 bot.polling(none_stop=True, interval=0)

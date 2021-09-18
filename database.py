@@ -5,7 +5,9 @@ from datetime import date
 db = config.database
 cursor = config.database.cursor()
 today = date.today()
-
+interval_1 = 1
+interval_2 = 2
+interval_3 = 3
 
 ## creating tables at start
 def create_tables():
@@ -106,14 +108,57 @@ def has_active_word(usr_id):
   query = "SELECT COUNT(id) is_active FROM words WHERE is_active = 1 AND user_id = %d" % (usr_id)
   cursor.execute(query)
   count = cursor.fetchone()[0]
-
   if (count > 0):
     return True
   else:
     return False
 
+def has_unrepeated_words(usr_id):
+  query = "SELECT COUNT(id) is_active FROM words WHERE next_repeat = '%s' AND user_id = %d" % (today, usr_id)
+  cursor.execute(query)
+  count = cursor.fetchone()[0]
+  if (count > 0):
+    print('true')
+    return True
+  else:
+    print('false')
+    return False
+
+def count_urepeated_words(usr_id):
+  query = "SELECT COUNT(id) is_active FROM words WHERE next_repeat = '%s' AND user_id = %d" % (today, usr_id)
+  cursor.execute(query)
+  count = cursor.fetchone()[0]
+  return count
+
 def edit_next_repeat(wrd_id):
-  query = "UPDATE words SET next_repeat = date_add(curdate(), interval 1 day) WHERE id = %d" % (wrd_id)
+  
+  level = get_level(wrd_id)
+  if level == 1:
+    interval = interval_1
+  elif level == 2:
+    interval = interval_2
+  elif level == 3:
+    interval = interval_3
+  elif level > 3:
+    interval = 5
+  elif level < 1:
+    interval = 0
+
+  query = "UPDATE words SET next_repeat = date_add(curdate(), interval %d day) WHERE id = %d" % (interval, wrd_id)
   print(query)
   cursor.execute(query)
   db.commit()
+
+def get_level(wrd_id):
+   query = "SELECT level FROM words WHERE id = %d" % (wrd_id)
+   cursor.execute(query)
+   level = cursor.fetchone()[0]
+   return level
+
+def edit_last_repeat(wrd_id):
+  query = "UPDATE words SET last_repeat = curdate() WHERE id = %d" % (wrd_id)
+  cursor.execute(query)
+  db.commit()
+
+
+has_unrepeated_words(1)
