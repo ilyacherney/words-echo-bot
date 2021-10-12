@@ -78,7 +78,7 @@ def dont_know_word(wrd_id):
   database.deactivate_word(wrd_id)
   database.edit_last_repeat(wrd_id)
 
-## makes the bot works constantly. though i'm not really sure
+## makes the bot works constantly. though im not really sure
 try:
     bot.poling(none_stop=True)
 except:
