@@ -161,4 +161,4 @@ def edit_last_repeat(wrd_id):
   db.commit()
 
 
-has_unrepeated_words(1)
+create_tables()

@@ -79,4 +79,7 @@ def dont_know_word(wrd_id):
   database.edit_last_repeat(wrd_id)
 
 ## makes the bot works constantly. though i'm not really sure
-bot.polling(none_stop=True, interval=0)
+try:
+    bot.poling(none_stop=True)
+except:
+    pass

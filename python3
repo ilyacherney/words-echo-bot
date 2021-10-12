@@ -1,0 +1,13 @@
+#!/usr/bin/python3.3
+import mysql.connector as mysql
+
+token = '1996263018:AAG3t3kljK3R_9GEBBtkskYC3kLrf-wjV0I'
+
+## connecting to the database using 'connect()' method
+## it takes 3 required parameters 'host', 'user', 'passwd'
+database = mysql.connect(
+    host = "localhost",
+    user = "co85871_bot",
+    passwd = "123q123W",
+    database = "co85871_bot"
+)
