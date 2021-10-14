@@ -21,21 +21,23 @@ def get_text_messages(message):
   user_id = database.get_user_id(tg_user_id)
   word = message.text
   
-  # word_id = 
-  
-  # if (word == 't'):
+
   #   send_today_pull(tg_user_id)
-  if (word == 'y'): ##have to add a check if we have unrepeated words
-    if (database.has_active_word(user_id) == True):
-      bot.send_message(tg_user_id, 'already have an active word')
-    elif (database.has_active_word(user_id) == False):
-        send_random_word(user_id, tg_user_id)
+  if (word == 'y'): 
+    if database.has_unrepeated_words(user_id):
+      if (database.has_active_word(user_id) == True):
+        bot.send_message(tg_user_id, 'already have an active word')
+      elif (database.has_active_word(user_id) == False):
+          send_random_word(user_id, tg_user_id)
+    else:
+      bot.send_message(tg_user_id, 'all words repeated')
   elif (word == 'k'):
-    active_word_id = database.get_active_word_id(user_id)
-    know_word(active_word_id)
-    bot.send_message(tg_user_id, 'glad to hear you know the word!')
-    if database.has_unrepeated_words:
-      send_random_word(user_id, tg_user_id)
+    if (database.has_active_word(user_id) == True):
+      active_word_id = database.get_active_word_id(user_id)
+      know_word(active_word_id)
+      bot.send_message(tg_user_id, 'glad to hear you know the word!')
+      if database.has_unrepeated_words(user_id):
+        send_random_word(user_id, tg_user_id)
     else:
       bot.send_message(tg_user_id, 'all words repeated')
   elif (word == 'd'):
@@ -78,8 +80,7 @@ def dont_know_word(wrd_id):
   database.deactivate_word(wrd_id)
   database.edit_last_repeat(wrd_id)
 
+
+
 ## makes the bot works constantly. though im not really sure
-try:
-    bot.poling(none_stop=True)
-except:
-    pass
+bot.polling(none_stop=True, interval=0)

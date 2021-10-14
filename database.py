@@ -37,6 +37,8 @@ def create_tables():
 
 
 
+
+
 def create_user(username, tg_user_id):
   query = "INSERT IGNORE INTO users (username, tg_user_id) VALUES (%s, %s)"
   values = (username, tg_user_id)
@@ -60,7 +62,7 @@ def get_user_id(tg_user_id):
   return id
 
 def get_random_word_id(usr_id):
-  random_id = random.choice(get_today_pull_id(usr_id))[0]
+  random_id = random.choice(get_today_pull_id(usr_id))[0] ## here is the error
   print(random_id)
   return random_id
 
@@ -114,18 +116,19 @@ def has_active_word(usr_id):
     return False
 
 def has_unrepeated_words(usr_id):
-  query = "SELECT COUNT(id) is_active FROM words WHERE next_repeat = '%s' AND user_id = %d" % (today, usr_id)
+  query = "SELECT COUNT(id) FROM words WHERE next_repeat = '%s' AND user_id = %d" % (today, usr_id)
+  print(query)
   cursor.execute(query)
   count = cursor.fetchone()[0]
   if (count > 0):
-    print('true')
+    print(' has unrepeated words true')
     return True
   else:
-    print('false')
+    print('has unrepeated words false')
     return False
 
 def count_urepeated_words(usr_id):
-  query = "SELECT COUNT(id) is_active FROM words WHERE next_repeat = '%s' AND user_id = %d" % (today, usr_id)
+  query = "SELECT COUNT(id) is_active FROM words WHERE next_repeat = '%s' AND user_id = %d" % (today, usr_id) ## тут походу не надо возвращать значение is_acitve, потому что неповторенное слово может и не быть активным
   cursor.execute(query)
   count = cursor.fetchone()[0]
   return count
@@ -162,3 +165,4 @@ def edit_last_repeat(wrd_id):
 
 
 create_tables()
+
