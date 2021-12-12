@@ -1,105 +1,45 @@
 import config
 import database
 import telebot
+import ast
 from telebot import types
 
 bot = telebot.TeleBot(config.token)
 
-database.create_tables()
-
 ## adding user to database at start
 @bot.message_handler(commands=['start'])
 def start(message):
-  tg_user_id = message.from_user.id
-  user_name = message.from_user.username
-  
-  database.create_user(user_name, tg_user_id)
+  database.create_user(message.from_user.username, message.from_user.id)
+
+@bot.message_handler(commands=['listwords'])
+def list_words(message):
+  user_id = database.get_user_id(message.from_user.id)
+  words = database.get_words(user_id)
+  markup = types.InlineKeyboardMarkup()
+  for word in words:
+    markup.add(
+      types.InlineKeyboardButton(text=word[1], callback_data=word[1]),
+      types.InlineKeyboardButton(text='🗑', callback_data= "['delete', '" + str(word[0]) + "', '" + word[1] + "']"))
+      # types.InlineKeyboardButton(text='✏️', callback_data= "['edit', '" + str(word[0]) + "', '" + word[1] + "', '" + str(message.chat.id) + "']"))
+  bot.send_message(message.chat.id, 'List of your saved words', reply_markup=markup)
+
+@bot.callback_query_handler(func=lambda call: True)
+def query_handler(call):
+  actionFromCallBack = ast.literal_eval(call.data)[0]
+  idFromCallBack = ast.literal_eval(call.data)[1]
+  wordFromCallBack = ast.literal_eval(call.data)[2] 
+  # micFromCallBack = ast.literal_eval(call.data)[3]
+  if actionFromCallBack == 'delete':
+    database.delete_word(idFromCallBack)
+    bot.answer_callback_query(callback_query_id=call.id, text="'" + wordFromCallBack + "' deleted")
+  # elif actionFromCallBack == 'edit':
+  #   bot.send_message(micFromCallBack, "Input new value for '" + wordFromCallBack + "' ")
+
 
 ## saving received word to database
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
-  tg_user_id = message.from_user.id
-  user_id = database.get_user_id(tg_user_id)
-  word = message.text
-  
+  database.save_word(message.text, database.get_user_id(message.from_user.id))
+  bot.reply_to(message, 'Saved')
 
-  #   send_today_pull(tg_user_id)
-  if (word == 'y'): 
-
- 
-	
-
-    if database.has_unrepeated_words(user_id):
-      if (database.has_active_word(user_id) == True):
-        bot.send_message(tg_user_id, 'already have an active word')
-      elif (database.has_active_word(user_id) == False):
-          send_random_word(user_id, tg_user_id)
-    else:
-      bot.send_message(tg_user_id, 'all words repeated')
-  elif (word == 'k'):
-    if (database.has_active_word(user_id) == True):
-      active_word_id = database.get_active_word_id(user_id)
-      know_word(active_word_id)
-      bot.send_message(tg_user_id, 'glad to hear you know the word!')
-      if database.has_unrepeated_words(user_id):
-        send_random_word(user_id, tg_user_id)
-    else:
-      bot.send_message(tg_user_id, 'all words repeated')
-  elif (word == 'd'):
-    dont_know_word(user_id)
-    bot.send_message(tg_user_id, 'well... we will repeat that one later')
-  else:
-    database.save_word(word, user_id)
-    save_report(word, tg_user_id)
-  
-  
-## report user about saving
-def save_report(word, tg_user_id):
-  message = "Word '" + word + "' saved."
-  bot.send_message(tg_user_id, message)
-
-
-# ## sending today pull
-# def send_today_pull(tg_usr_id):
-#   print('test today pull')
-#   words_to_send = database.get_today_pull()
-#   for x in words_to_send:
-#     bot.send_message(tg_usr_id, x)
-    
-## Y
-def send_random_word(usr_id, tg_usr_id):
-  markup3 = types.InlineKeyboardMarkup()
-  item1 = types.InlineKeyboardButton("✅ Know", callback_data='know')
-  item2 = types.InlineKeyboardButton("❌ Don't know", callback_data='dont')
- 
-  markup3.add(item1, item2)
-  id = database.get_random_word_id(usr_id)
-  word = database.get_word(id)
-  bot.send_message(tg_usr_id, word, reply_markup=markup3)
-  database.activate_word(id)
-
-@bot.callback_query_handler(func=lambda call: True)
-def query_handler(call):
-  if call.data == 'know':
-    bot.answer_callback_query(callback_query_id=call.id, text='well u know.. it look like u actually know the word')
-  elif call.data == 'dont':
-    bot.answer_callback_query(callback_query_id=call.id, text=' u dont actually know the word, no big deal at all')
-
-def know_word(wrd_id):
-  database.level_up(wrd_id)
-  database.edit_next_repeat(wrd_id)
-  database.deactivate_word(wrd_id)
-  database.edit_last_repeat(wrd_id)
-
-def dont_know_word(wrd_id):
-  database.level_down(wrd_id)
-  database.edit_next_repeat(wrd_id)
-  database.deactivate_word(wrd_id)
-  database.edit_last_repeat(wrd_id)
-  
-
-
-
-
-## makes the bot works constantly. though im not really sure
 bot.polling(none_stop=True, interval=0)

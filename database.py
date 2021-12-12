@@ -73,6 +73,14 @@ def get_word(id):
   print(word)
   return word
 
+def get_words(user_id):
+  query = "SELECT id, word FROM words WHERE user_id = '{}'".format(user_id)
+  cursor.execute(query)
+  words = cursor.fetchall()
+  # print(words)
+  print('get_words user_id ' + str(user_id))
+  return words
+
 def get_active_word_id(usr_id):
   query = "SELECT id FROM words WHERE user_id = %d AND is_active = 1" % (usr_id)
   cursor.execute(query)
@@ -94,6 +102,13 @@ def activate_word(id):
   query = "UPDATE words SET is_active = true WHERE id = '{}'".format(id)
   cursor.execute(query)
   db.commit()
+
+def delete_word(id):
+  query = "DELETE FROM words WHERE id = {}".format(id)
+  print(query)
+  cursor.execute(query)
+  db.commit()
+  print('word deleted')
 
 def deactivate_word(wrd_id):
   query = "UPDATE words SET is_active = false WHERE id = %d" % (wrd_id)
