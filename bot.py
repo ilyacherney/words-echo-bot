@@ -1,3 +1,4 @@
+#!/usr/bin/python3.3
 import config
 import database
 import telebot
