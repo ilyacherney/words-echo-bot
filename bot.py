@@ -3,6 +3,7 @@ import config
 import database
 import telebot
 import ast
+import time
 from telebot import types
 
 bot = telebot.TeleBot(config.token)
@@ -43,4 +44,11 @@ def get_text_messages(message):
   database.save_word(message.text, database.get_user_id(message.from_user.id))
   bot.reply_to(message, 'Saved')
 
-bot.polling(none_stop=True, interval=0)
+while True:
+    try:
+        bot.polling(none_stop=True)
+
+    except Exception as e:
+        print(e)  # или просто print(e) если у вас логгера нет,
+        # или import traceback; traceback.print_exc() для печати полной инфы
+        time.sleep(15)
