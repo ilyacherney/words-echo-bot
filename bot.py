@@ -19,7 +19,7 @@ def list_words(message):
   markup = types.InlineKeyboardMarkup()
   for word in words:
     markup.add(
-      types.InlineKeyboardButton(text=word[1], callback_data=word[1]),
+      types.InlineKeyboardButton(text=word[1], callback_data= "['tap', '" + str(word[0]) + "', '" + word[1] + "']"),
       types.InlineKeyboardButton(text='DELETE', callback_data= "['delete', '" + str(word[0]) + "', '" + word[1] + "']"))
       # types.InlineKeyboardButton(text='EDIT', callback_data= "['edit', '" + str(word[0]) + "', '" + word[1] + "', '" + str(message.chat.id) + "']"))
   bot.send_message(message.chat.id, 'List of your saved words', reply_markup=markup)

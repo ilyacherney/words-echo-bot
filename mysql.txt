@@ -31,3 +31,8 @@ SELECT * FROM USERS WHERE tg_user_id = 454296696
 
 def user_check(tg_user_id):
   cursor.execute("SELECT tg_user_id FROM users WHERE tg_user_id = %s", (tg_user_id))
+
+virtualenv .bot
+source .bot/bin/activate
+
+iZ53RS6Omsl0
