@@ -44,11 +44,4 @@ def get_text_messages(message):
   database.save_word(message.text, database.get_user_id(message.from_user.id))
   bot.reply_to(message, 'Saved')
 
-while True:
-    try:
-        bot.polling(none_stop=True)
-
-    except Exception as e:
-        print(e)  # или просто print(e) если у вас логгера нет,
-        # или import traceback; traceback.print_exc() для печати полной инфы
-        time.sleep(15)
+bot.infinity_polling()
