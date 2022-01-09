@@ -16,7 +16,7 @@ def create_tables():
   query_words_table = """
     CREATE TABLE IF NOT EXISTS words (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-      word VARCHAR(255), 
+      word VARCHAR(40), 
       user_id INT(11), 
       date_added DATE, 
       last_repeat DATE, 
